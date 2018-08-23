@@ -45,6 +45,7 @@ var budgetController = (
                     }
                 );
                 console.log(data.totals[type]);
+                return data.totals[type];
             }
         }
 
@@ -64,6 +65,11 @@ var UIController = (
             expensesList: '.expenses__list',
             budgetIncomeValue: '.budget__income--value',
             budgetExpensesValue: '.budget__expenses--value',
+        };
+
+        var typeSigns = {
+            inc: '+',
+            exp: '-',
         };
 
         return {
@@ -120,8 +126,9 @@ var UIController = (
                 // insert HTML to the DOM
                 document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
             },
-            displayTotals: () => {
-
+            displayTotals: (type, total) => {
+                var totalString = type === 'inc' ? DOMStrings.budgetIncomeValue : DOMStrings.budgetExpensesValue;
+                document.querySelector(totalString).textContent = typeSigns[type] + ' ' + total;
             }
         }
     }
@@ -153,9 +160,9 @@ var controller = (
                 UICtrl.addItemToList(item);
             }
             // 4. Calculate the budget.
-            budgetCtrl.calculateTotals(item.type)
+            var total = budgetCtrl.calculateTotals(item.type)
             // 5. Display the budget on the UI.
-
+            UICtrl.displayTotals(item.type, total);
         }
 
         return {
